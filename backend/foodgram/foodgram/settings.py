@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'djoser',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
-        
+    'tags.apps.TagsConfig',
+    'ingredients.apps.IngredientsConfig',        
 ]
 
 REST_FRAMEWORK = {
@@ -67,6 +68,7 @@ DJOSER = {
         'current_user': 'users.serializers.UserSerializer',
     },
     'LOGIN_FIELD': 'email',
+    'HIDE_USERS': False,
     'PERMISSIONS': {
         'activation': ['rest_framework.permissions.AllowAny'],
         'password_reset': ['rest_framework.permissions.AllowAny'],
@@ -81,7 +83,6 @@ DJOSER = {
         'user_list': ['rest_framework.permissions.AllowAny'],
         'token_create': ['rest_framework.permissions.AllowAny'],
         'token_destroy': ['rest_framework.permissions.IsAuthenticated']},
-    'HIDE_USERS': False,
 }
 
 MIDDLEWARE = [

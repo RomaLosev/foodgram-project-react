@@ -1,11 +1,4 @@
-from django.views import View
-from django.shortcuts import get_object_or_404
-
-from rest_framework import viewsets, status, permissions
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-
-from djoser.views import TokenCreateView, UserViewSet
+from rest_framework import viewsets
 
 from recipes.models import User
 from .serializers import UserSerializer
