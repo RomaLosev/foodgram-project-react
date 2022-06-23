@@ -21,6 +21,16 @@ authorization = [
 ]
 
 urlpatterns = [
+    path(
+        'users/subscriptions/',
+        views.SubscriptionViewSet.as_view({'get': 'list'}),
+        name='subscriptions'
+    ),
+    path(
+        'users/<int:pk>/subscribe/',
+        views.FollowViewSet.as_view(),
+        name='subscribe'
+    ),
     url(r'', include(router.urls)),
     path('auth/', include(authorization)),
 ]
