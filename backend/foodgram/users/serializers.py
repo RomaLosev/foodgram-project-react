@@ -1,13 +1,12 @@
 from django.contrib.auth.hashers import make_password
-from rest_framework.serializers import SerializerMethodField
+from rest_framework.serializers import SerializerMethodField, ModelSerializer
 from djoser.serializers import UserCreateSerializer
-from .models import Follow
 
-from recipes.serializers import ShortRecipeSerializer
-from users.models import User
+from users.models import Follow, User
+from recipes.models import Recipe
 
 
-class UserSerializer(UserCreateSerializer):
+class CustomUserSerializer(UserCreateSerializer):
     is_following = SerializerMethodField('is_following_user')
 
     class Meta:
@@ -33,11 +32,18 @@ class UserSerializer(UserCreateSerializer):
             and Follow.objects.filter(user=user, author=obj.id).exists()
         )
 
-class SubscriptionSerializer(UserSerializer):
+
+class ShortRecipeSerializer(ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time',)
+
+
+class SubscriptionSerializer(CustomUserSerializer):
     recipes = ShortRecipeSerializer(many=True)
     recipes_count = SerializerMethodField()
 
-    class Meta(UserSerializer.Meta):
+    class Meta(CustomUserSerializer.Meta):
         fields = ('recipes', 'recipes_count',)
 
     def get_recipes_count(self, obj):
