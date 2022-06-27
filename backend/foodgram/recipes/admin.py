@@ -11,6 +11,7 @@ class IngredientAdmin(admin.ModelAdmin):
     )
     search_fields = ('name',)
 
+
 @admin.register(CountOfIngredient)
 class CountOfIngredientAdmin(admin.ModelAdmin):
     list_display = (
@@ -18,6 +19,7 @@ class CountOfIngredientAdmin(admin.ModelAdmin):
         'amount',
     )
     search_fields = ('ingredient',)
+
 
 class CountOfIngredientInline(admin.TabularInline):
     model = Recipe.ingredients.through
@@ -34,6 +36,7 @@ class RecipesAdmin(admin.ModelAdmin):
     )
     search_fields = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):

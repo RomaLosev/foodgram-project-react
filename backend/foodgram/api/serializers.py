@@ -4,8 +4,14 @@ from drf_extra_fields.fields import Base64ImageField
 from django.db import transaction
 
 from foodgram.settings import MIN_AMOUNT, MIN_COOCKING_TIME
-from recipes.models import Recipe, Tag, Ingredient, CountOfIngredient, Favorite, ShoppingCart
+from recipes.models import (
+    Recipe, Tag, Ingredient,
+    CountOfIngredient, Favorite, ShoppingCart
+)
 from users.serializers import CustomUserSerializer, ShortRecipeSerializer
+
+MIN_COOCKING_ERROR = 'Время приготовления должно быть больше'
+
 
 class TagSerializer(serializers.ModelSerializer):
     """
@@ -49,13 +55,16 @@ class RecipeListSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
     ingredients = CountOfIngredientSerializer(many=True)
-    is_favorited = serializers.SerializerMethodField(read_only=True, method_name='is_favorited')
-    is_in_shopping_cart = serializers.SerializerMethodField(read_only=True, method_name='is_in_shopping_cart')
+    is_favorited = serializers.SerializerMethodField(
+        read_only=True, method_name='is_favorited'
+    )
+    is_in_shopping_cart = serializers.SerializerMethodField(
+        read_only=True, method_name='is_in_shopping_cart'
+    )
 
     class Meta:
         model = Recipe
         fields = '__all__'
-
 
     def is_favorited(self, obj):
         request = self.context.get('request')
@@ -69,7 +78,8 @@ class RecipeListSerializer(serializers.ModelSerializer):
             return False
         return ShoppingCart.objects.filter(
             user=request.user, recipe=obj).exists()
-    
+
+
 class AddIngredientSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления Ингредиентов
@@ -113,7 +123,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             amount = ingredient['amount']
             if int(amount) <= MIN_AMOUNT:
                 raise serializers.ValidationError({
-                    'amount': 'Количество ингредиентов должно быть больше {MIN_AMOUNT}!'
+                    'amount': 'Ингредиентов должно быть больше {MIN_AMOUNT}!'
                 })
 
         tags = data['tags']
@@ -132,7 +142,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         cooking_time = data['cooking_time']
         if int(cooking_time) <= MIN_COOCKING_TIME:
             raise serializers.ValidationError({
-                'cooking_time': 'Время приготовления должно быть больше {MIN_COOCKING_TIME}!'
+                'cooking_time': '{MIN_COOCKING_ERROR} - {MIN_COOCKUNG_TIME}!'
             })
         return data
 
@@ -191,11 +201,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
-        #recipe = data['recipe']
-        # if Favorite.objects.filter(user=request.user, recipe=recipe).exists():
-        #     raise serializers.ValidationError({
-        #         'status': 'Рецепт уже есть в избранном!'
-        #     })
         return data
 
     def to_representation(self, instance):

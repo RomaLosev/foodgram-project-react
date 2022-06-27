@@ -1,4 +1,3 @@
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, views
 from rest_framework.response import Response
@@ -10,13 +9,14 @@ from recipes.models import User
 from users.serializers import SubscriptionSerializer, CustomUserSerializer
 from api.permissions import IsAdminOrReadOnly
 
+
 class SubscriptionViewSet(viewsets.ModelViewSet):
     """
     Отдаёт все подписки пользователя
-    """    
+    """
     serializer_class = SubscriptionSerializer(many=True)
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return User.objects.filter(
             username=self.request.user)
@@ -25,23 +25,22 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 class UsersViewSet(UserViewSet):
     """
     Отдаёт список пользователей
-    """    
+    """
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     lookup_field = 'id'
     permission_classes = (IsAdminOrReadOnly,)
 
 
-
 class FollowViewSet(views.APIView):
     """
     Обрабатывает подписки
     post/delete
-    """    
+    """
     serializer_class = SubscriptionSerializer
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Follow.objects.all()
-    
+
     def post(self, request, pk):
         author = get_object_or_404(User, id=pk)
         if request.user == author:
@@ -54,7 +53,6 @@ class FollowViewSet(views.APIView):
             author=author,
         )
         return Response(status=status.HTTP_201_CREATED)
-
 
     def delete(self, request, pk):
         author = get_object_or_404(User, id=pk)

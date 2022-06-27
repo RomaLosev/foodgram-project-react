@@ -21,9 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY',
-                       default='p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs)'
-                    )
+SECRET_KEY = os.getenv('SECRET_KEY', default='p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs)')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', default=False).upper() == 'TRUE'
 
@@ -44,14 +42,13 @@ INSTALLED_APPS = [
     'django_filters',
     'djoser',
     'users.apps.UsersConfig',
-    'recipes.apps.RecipesConfig',       
+    'recipes.apps.RecipesConfig',
 ]
 
 REST_FRAMEWORK = {
-   'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated', 
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ],
-
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
@@ -178,4 +175,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MIN_AMOUNT = 0
 MIN_COOCKING_TIME = 0
-PDF_NAME='shopping_list.pdf'
+PDF_NAME = 'shopping_list.pdf'

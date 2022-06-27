@@ -1,4 +1,3 @@
-from email.mime import image
 from django.db import models
 from django.urls import reverse
 from users.models import User
@@ -17,7 +16,7 @@ class Ingredient(models.Model):
         max_length=200,
         help_text='Единица измерения',
     )
-    
+
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
@@ -71,7 +70,7 @@ class CountOfIngredient(models.Model):
             )
         ],
     )
-    
+
     class Meta:
         verbose_name = 'Количество ингредиента'
         verbose_name_plural = 'Количество ингредиентов'
@@ -125,7 +124,7 @@ class Recipe(models.Model):
         verbose_name='Автор',
         help_text='Автор рецепта',
     )
-    
+
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'

@@ -14,8 +14,9 @@ class UserAdmin(admin.ModelAdmin):
         'id',
     )
     search_fields = ('username', 'first_name', 'last_name', 'id')
-    list_filter = ('email','username',)
+    list_filter = ('email', 'username',)
     empty_value_display = '-пусто-'
-    
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

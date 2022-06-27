@@ -17,18 +17,18 @@ from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.filters import RecipeFilter
 from api.services.pdf import create_pdf
 
+
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    
-    
+
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return RecipeListSerializer
         return RecipeSerializer
- 
+
     @staticmethod
     def post_method_for_actions(request, pk, serializers):
         data = {'user': request.user.id, 'recipe': pk}
@@ -75,9 +75,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         final_list = (
             ingredients.values(
-                'ingredient__name','ingredient__unit',
+                'ingredient__name', 'ingredient__unit',
             ).annotate(Sum('amount')))
-        
+
         file = create_pdf(final_list, 'Список покупок')
 
         return FileResponse(

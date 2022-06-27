@@ -16,7 +16,7 @@ def create_pdf(data: list, title: str) -> TextIO:
     pdfmetrics.registerFont(
         TTFont('CenturyGothic', '../../data/CenturyGothic.ttf', 'UTF-8')
     )
-    
+
     page.setFont('CenturyGothic', size=24)
     height = 750
     page.drawString(55, height, f'{title}')
@@ -25,11 +25,9 @@ def create_pdf(data: list, title: str) -> TextIO:
     for i in data:
         page.drawString(
             15, height,
-            (
-            f"{i['ingredient__name']} - "
-            f"{i['amount__sum']} "
-            f"{i['ingredient__unit']}"
-            )
+            (f"{i['ingredient__name']} - "
+             f"{i['amount__sum']} "
+             f"{i['ingredient__unit']}")
         )
         height -= 25
 
