@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from foodgram.settings import MIN_VALUE, MIN_VALUE_ERROR
 from users.models import User
 
 from django.core.validators import MinValueValidator
@@ -21,10 +22,10 @@ class Ingredient(models.Model):
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
         ordering = ('name',)
-        constraints = [
-            models.UniqueConstraint(fields=['name', 'unit'],
-                                    name='unique ingredient')
-        ]
+        constraints = (
+            models.UniqueConstraint(fields=('name', 'unit',),
+                                    name='unique ingredient'),
+        )
 
     def __str__(self):
         return f'{self.name}{self.unit}'
@@ -63,12 +64,12 @@ class CountOfIngredient(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         help_text='Количество',
-        validators=[
+        validators=(
             MinValueValidator(
-                1,
-                message='Количество не может быть меньше 1',
-            )
-        ],
+                MIN_VALUE,
+                message=f'{MIN_VALUE_ERROR} - {MIN_VALUE}',
+            ),
+        ),
     )
 
     class Meta:
@@ -112,7 +113,7 @@ class Recipe(models.Model):
         validators=(
             MinValueValidator(
                 1,
-                message='Время приготовления не может быть меньше минуты',
+                message='{MIN_VALUE_ERROR} - {MIN_VALUE}',
             ),
         )
     )
@@ -156,10 +157,13 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'recipe'],
-                                    name='unique favorite')
-        ]
+        constraints = (
+            models.UniqueConstraint(fields=('user', 'recipe',),
+                                    name='unique favorite'),
+        )
+
+    def __str__(self):
+        return f'{self.recipe}'
 
 
 class ShoppingCart(models.Model):
@@ -181,7 +185,10 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'recipe'],
-                                    name='unique shopping cart')
-        ]
+        constraints = (
+            models.UniqueConstraint(fields=('user', 'recipe',),
+                                    name='unique shopping cart'),
+        )
+
+    def __str__(self):
+        return f'{self.recipe}'

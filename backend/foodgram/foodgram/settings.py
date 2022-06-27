@@ -176,3 +176,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MIN_AMOUNT = 0
 MIN_COOCKING_TIME = 0
 PDF_NAME = 'shopping_list.pdf'
+MIN_VALUE = 1
+MIN_VALUE_ERROR = 'Не может быть меньше'

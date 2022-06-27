@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Ingredient, Recipe, Tag, CountOfIngredient
+from recipes.models import Ingredient, Recipe, Tag, CountOfIngredient
 
 
 @admin.register(Ingredient)
@@ -27,9 +27,9 @@ class CountOfIngredientInline(admin.TabularInline):
 
 @admin.register(Recipe)
 class RecipesAdmin(admin.ModelAdmin):
-    inlines = [
+    inlines = (
         CountOfIngredientInline,
-    ]
+    )
     list_display = (
         'name',
         'author',
