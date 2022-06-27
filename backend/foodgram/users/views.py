@@ -49,16 +49,10 @@ class FollowViewSet(views.APIView):
                 {'Нельзя подписаться на самого себя'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        try:
-            Follow.objects.create(
-                user=request.user,
-                author=author,
-            )
-        except IntegrityError:
-            return Response(
-                {'Вы уже подписаны на этого пользователя'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        Follow.objects.get_or_create(
+            user=request.user,
+            author=author,
+        )
         return Response(status=status.HTTP_201_CREATED)
 
 

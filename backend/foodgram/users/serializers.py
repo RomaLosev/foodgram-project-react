@@ -7,7 +7,7 @@ from recipes.models import Recipe
 
 
 class CustomUserSerializer(UserCreateSerializer):
-    is_following = SerializerMethodField('is_following_user')
+    is_following = SerializerMethodField(method_name='is_following_user')
 
     class Meta:
         model = User
@@ -18,12 +18,6 @@ class CustomUserSerializer(UserCreateSerializer):
         extra_kwargs = {
             'password': {'write_only': True, 'required': True},
         }
-
-    # def create(self, validated_data):
-    #     validated_data['password'] = (
-    #         make_password(validated_data.pop('password'))
-    #     )
-    #     return super().create(validated_data)
 
     def is_following_user(self, obj):
         user = self.context.get('request').user
@@ -41,10 +35,10 @@ class ShortRecipeSerializer(ModelSerializer):
 
 class SubscriptionSerializer(CustomUserSerializer):
     recipes = ShortRecipeSerializer(many=True)
-    recipes_count = SerializerMethodField()
+    recipes_count = SerializerMethodField(method_name='recipes_count')
 
     class Meta(CustomUserSerializer.Meta):
         fields = ('recipes', 'recipes_count',)
 
-    def get_recipes_count(self, obj):
+    def recipes_count(self, obj):
         return obj.recipes.count()
