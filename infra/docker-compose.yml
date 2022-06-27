@@ -8,8 +8,6 @@ services:
       - ./.env
   backend:
     image: hulinet/foodgram_backend:latest
-    expose:
-      - 8000
     restart: always
     volumes:
       - static_value:/app/static/
