@@ -20,8 +20,7 @@ services:
     env_file:
       - ./.env
   frontend:
-    build:
-      image: hulinet/foodgram_frontend:latest
+    image: hulinet/foodgram_frontend:v1
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
