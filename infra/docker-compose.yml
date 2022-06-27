@@ -14,7 +14,6 @@ services:
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
-      - data_value:../../data
     depends_on:
       - db
     env_file:
@@ -37,6 +36,5 @@ services:
       - frontend
 
 volumes:
-  data_value:
   static_value:
   media_value:
