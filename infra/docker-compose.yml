@@ -40,3 +40,5 @@ volumes:
   data_value:
   static_value:
   media_value:
+  redoc:
+  result_build:
