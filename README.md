@@ -1,6 +1,6 @@
 # praktikum_new_diplom
 
-![example workflow](https://github.com/huli-net/foodgram-project-react/actions/workflows/main.yaml/badge.svg)
+![example workflow](https://github.com/huli-net/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 # Описание проекта
 Foodgram - сайт для публикации рецептов.
