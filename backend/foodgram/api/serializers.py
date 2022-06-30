@@ -107,9 +107,11 @@ class RecipeSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления рецептов
     """
-    tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(),
-        many=True
+    tags = serializers.ListField(
+        child=serializers.SlugRelatedField(
+            slug_field='id',
+            queryset=Tag.objects.all(),
+        ),
     )
     ingredients = RecipeIngredientWriteSerializer(many=True)
     author = CustomUserSerializer(read_only=True)
