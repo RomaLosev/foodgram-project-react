@@ -41,10 +41,6 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления ингредиентов
     """
-    id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all()
-    )
-    amount = serializers.IntegerField()
 
     class Meta:
         model = CountOfIngredient
@@ -111,9 +107,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(),
         many=True
     )
-    ingredients = RecipeIngredientWriteSerializer(
-        many=True, write_only=True
-    )
+    ingredients = RecipeIngredientWriteSerializer(many=True)
     author = CustomUserSerializer(read_only=True)
     image = Base64ImageField()
 
@@ -163,7 +157,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create_ingredients(ingredients, recipe):
         for ingredient in ingredients:
             CountOfIngredient.objects.create(
-                recipe=recipe, ingredient=ingredient,
+                recipe=recipe, ingredient=ingredient['id'],
                 amount=ingredient['amount']
             )
 

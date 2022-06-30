@@ -8,8 +8,9 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'unit',
+        'id',
     )
-    search_fields = ('name',)
+    search_fields = ('name', 'id')
 
 
 @admin.register(CountOfIngredient)
@@ -17,6 +18,7 @@ class CountOfIngredientAdmin(admin.ModelAdmin):
     list_display = (
         'ingredient',
         'amount',
+        'recipe',
     )
     search_fields = ('ingredient',)
 
