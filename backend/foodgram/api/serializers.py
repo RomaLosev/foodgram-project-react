@@ -24,7 +24,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug')
-        read_only_fields = '__all__'
+        read_only_fields = '__all__',
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'unit')
-        read_only_fields = '__all__'
+        read_only_fields = '__all__',
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
@@ -59,7 +59,7 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = CountOfIngredient
         fields = ('id', 'name', 'unit', 'amount')
-        read_only_fields = '__all__'
+        read_only_fields = '__all__',
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
