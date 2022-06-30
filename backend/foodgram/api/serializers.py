@@ -2,7 +2,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 
 from foodgram.settings import MIN_AMOUNT, MIN_COOCKING_TIME
 from recipes.models import (
