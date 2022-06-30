@@ -23,8 +23,7 @@ class TagSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Tag
-        fields = ('name', 'color', 'slug')
-        read_only_fields = '__all__',
+        fields = ('id', 'name', 'color', 'slug')
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -107,11 +106,9 @@ class RecipeSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления рецептов
     """
-    tags = serializers.ListField(
-        child=serializers.SlugRelatedField(
-            slug_field='id',
-            queryset=Tag.objects.all(),
-        ),
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True
     )
     ingredients = RecipeIngredientWriteSerializer(many=True)
     author = CustomUserSerializer(read_only=True)
