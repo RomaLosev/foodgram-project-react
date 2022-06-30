@@ -41,6 +41,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     Сериализатор для добавления ингредиентов
     """
     name = serializers.CharField(source='ingredient.name')
+
     class Meta:
         model = CountOfIngredient
         fields = ('id', 'name', 'amount',)
