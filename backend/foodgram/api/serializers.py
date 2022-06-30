@@ -111,7 +111,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(),
         many=True
     )
-    ingredients = RecipeIngredientWriteSerializer(many=True)
+    ingredients = RecipeIngredientWriteSerializer(
+        many=True, write_only=True
+    )
     author = CustomUserSerializer(read_only=True)
     image = Base64ImageField()
 
@@ -161,7 +163,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create_ingredients(ingredients, recipe):
         for ingredient in ingredients:
             CountOfIngredient.objects.create(
-                recipe=recipe, ingredient=ingredient['id'],
+                recipe=recipe, ingredient=ingredient,
                 amount=ingredient['amount']
             )
 
