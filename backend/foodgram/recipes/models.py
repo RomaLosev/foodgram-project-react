@@ -28,7 +28,7 @@ class Ingredient(models.Model):
         )
 
     def __str__(self):
-        return f'{self.name}{self.unit}'
+        return f'{self.name} {self.unit}'
 
 
 class Tag(models.Model):
