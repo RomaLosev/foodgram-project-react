@@ -40,7 +40,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     Сериализатор для добавления ингредиентов
     """
     id = serializers.PrimaryKeyRelatedField(
-        queryset = Ingredient.objects.all()
+        queryset=Ingredient.objects.all()
     )
 
     class Meta:
