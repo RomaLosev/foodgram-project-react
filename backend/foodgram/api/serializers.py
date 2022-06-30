@@ -40,13 +40,12 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления ингредиентов
     """
-    name = serializers.CharField(source='ingredient.name')
 
     class Meta:
         model = CountOfIngredient
-        fields = ('id', 'name', 'amount')
+        fields = ('id', 'amount')
         extra_kwargs = {
-            'name': {
+            'id': {
                 'read_only': False,
                 'error_messages': {
                     'does_not_exist': INGREDIENT_DOES_NOT_EXIST,
@@ -162,7 +161,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create_ingredients(ingredients, recipe):
         for ingredient in ingredients:
             CountOfIngredient.objects.create(
-                recipe=recipe, ingredient=ingredient['id'],
+                recipe=recipe, ingredient=ingredient['name'],
                 amount=ingredient['amount']
             )
 
