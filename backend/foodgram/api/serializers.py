@@ -44,7 +44,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CountOfIngredient
-        fields = ('id', 'name', 'amount',)
+        fields = ('id', 'name', 'amount')
         extra_kwargs = {
             'name': {
                 'read_only': False,
