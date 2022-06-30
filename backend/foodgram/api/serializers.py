@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 from foodgram.settings import MIN_AMOUNT, MIN_COOCKING_TIME
 from recipes.models import (
@@ -157,30 +158,51 @@ class RecipeSerializer(serializers.ModelSerializer):
             })
         return data
 
-    @staticmethod
-    def create_ingredients(ingredients, recipe):
+    # @staticmethod
+    # def create_ingredients(ingredients, recipe):
+    #     for ingredient in ingredients:
+    #         count_of_ingredient = CountOfIngredient.objects.get_or_create(
+    #             recipe=recipe,
+    #             ingredient=ingredient['id'],
+    #             amount=ingredient['amount']
+    #         )
+    #         recipe.ingredients.add(count_of_ingredient)
+
+    # @staticmethod
+    # def create_tags(tags, recipe):
+    #     for tag in tags:
+    #         recipe.tags.add(tag)
+
+    # @transaction.atomic
+    # def create(self, validated_data):
+    #     author = self.context.get('request').user
+    #     tags = validated_data.pop('tags')
+    #     ingredients = validated_data.pop('ingredients')
+    #     recipe = Recipe.objects.create(author=author, **validated_data)
+    #     self.create_tags(tags, recipe)
+    #     self.create_ingredients(ingredients, recipe)
+    #     return recipe
+    
+    def add_ingredients_and_tags(self, instance, validated_data):
+        ingredients, tags = (
+            validated_data.pop('ingredients'), validated_data.pop('tags')
+        )
         for ingredient in ingredients:
-            count_of_ingredient = CountOfIngredient.objects.get_or_create(
-                recipe=recipe,
-                ingredient=ingredient['id'],
-                amount=ingredient['amount']
+            count_of_ingredient, _ = CountOfIngredient.objects.get_or_create(
+                ingredient=get_object_or_404(Ingredient, pk=ingredient['id']),
+                amount=ingredient['amount'],
             )
-            recipe.ingredients.add(count_of_ingredient)
-
-    @staticmethod
-    def create_tags(tags, recipe):
+            instance.ingredients.add(count_of_ingredient)
         for tag in tags:
-            recipe.tags.add(tag)
+            instance.tags.add(tag)
+        return instance
 
-    @transaction.atomic
     def create(self, validated_data):
-        author = self.context.get('request').user
-        tags = validated_data.pop('tags')
-        ingredients = validated_data.pop('ingredients__id')
-        recipe = Recipe.objects.create(author=author, **validated_data)
-        self.create_tags(tags, recipe)
-        self.create_ingredients(ingredients, recipe)
-        return recipe
+        saved = {}
+        saved['ingredients'] = validated_data.pop('ingredients')
+        saved['tags'] = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        return self.add_ingredients_and_tags(recipe, saved)
 
     def to_representation(self, instance):
         request = self.context.get('request')
