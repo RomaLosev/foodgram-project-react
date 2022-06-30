@@ -160,7 +160,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create_ingredients(ingredients, recipe):
         for ingredient in ingredients:
             CountOfIngredient.objects.create(
-                recipe=recipe, ingredient=ingredient['name'],
+                recipe=recipe, ingredient=ingredient['id'],
                 amount=ingredient['amount']
             )
 
