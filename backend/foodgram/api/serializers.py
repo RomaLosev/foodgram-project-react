@@ -12,11 +12,6 @@ from users.serializers import CustomUserSerializer, ShortRecipeSerializer
 
 MIN_COOCKING_ERROR = 'Время приготовления должно быть больше'
 
-# deploy на сервер тоже сделал, весь день сегодня провозился,
-# но там что то не работает))
-# Может посмотришь, если получитсяб заодно docker-compose
-# и nginx.conf, вдруг заметишь что не так
-
 
 class TagSerializer(serializers.ModelSerializer):
     """
