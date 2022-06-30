@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 from foodgram.settings import MIN_AMOUNT, MIN_COOCKING_TIME
 from recipes.models import (
@@ -160,10 +161,12 @@ class RecipeSerializer(serializers.ModelSerializer):
     @staticmethod
     def create_ingredients(ingredients, recipe):
         for ingredient in ingredients:
-            CountOfIngredient.objects.create(
-                recipe=recipe, ingredient=ingredient['id'],
+            count_of_ingredient = CountOfIngredient.objects.get_or_create(
+                recipe=recipe,
+                ingredient=get_object_or_404(Ingredient, pk=ingredient['id']),
                 amount=ingredient['amount']
             )
+            recipe.ingredients.add(count_of_ingredient)
 
     @staticmethod
     def create_tags(tags, recipe):
