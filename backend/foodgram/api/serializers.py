@@ -24,6 +24,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug')
+        read_only_fields = '__all__'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -33,6 +34,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'unit')
+        read_only_fields = '__all__'
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
@@ -42,25 +44,11 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all()
     )
+    amount = serializers.IntegerField()
 
     class Meta:
         model = CountOfIngredient
         fields = ('id', 'amount')
-        extra_kwargs = {
-            'id': {
-                'read_only': False,
-                'error_messages': {
-                    'does_not_exist': INGREDIENT_DOES_NOT_EXIST,
-                }
-            },
-            'amount': {
-                'error_messages': {
-                    'min_value': INGREDIENT_MIN_AMOUNT_ERROR.format(
-                        min_value=1
-                    ),
-                }
-            }
-        }
 
 
 class RecipeIngredientReadSerializer(serializers.ModelSerializer):
@@ -71,6 +59,7 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = CountOfIngredient
         fields = ('id', 'name', 'unit', 'amount')
+        read_only_fields = '__all__'
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
@@ -80,14 +69,16 @@ class RecipeListSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
     ingredients = serializers.SerializerMethodField(
-        many=True,
-        method_name='ingredients',
+        read_only = True,
+        method_name='ingredients'
     )
     is_favorited = serializers.SerializerMethodField(
-        read_only=True, method_name='is_favorited'
+        read_only=True,
+        method_name='is_favorited'
     )
     is_in_shopping_cart = serializers.SerializerMethodField(
-        read_only=True, method_name='is_in_shopping_cart'
+        read_only=True,
+        method_name='is_in_shopping_cart'
     )
 
     class Meta:
