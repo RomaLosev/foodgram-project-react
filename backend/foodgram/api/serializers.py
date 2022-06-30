@@ -79,7 +79,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     """
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
-    ingredients = RecipeIngredientReadSerializer(many=True)
+    ingredients = serializers.SerializerMethodField(many=True, method_name='ingredients')
     is_favorited = serializers.SerializerMethodField(
         read_only=True, method_name='is_favorited'
     )
@@ -90,6 +90,10 @@ class RecipeListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = '__all__'
+
+    def ingredients(self, obj):
+        queryset = CountOfIngredient.objects.filter(recipe=obj)
+        return RecipeIngredientReadSerializer(queryset, many=True).data
 
     def is_favorited(self, obj):
         request = self.context.get('request')
