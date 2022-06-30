@@ -163,7 +163,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             count_of_ingredient = CountOfIngredient.objects.get_or_create(
                 recipe=recipe,
-                ingredient=get_object_or_404(Ingredient, pk=ingredient['id']),
+                ingredient=ingredient['id'],
                 amount=ingredient['amount']
             )
             recipe.ingredients.add(count_of_ingredient)
