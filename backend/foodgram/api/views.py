@@ -101,4 +101,4 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = (permissions.AllowAny,)
     filter_backends = (IngredientSearchFilter,)
-    lookup_field = 'id'
+    lookup_field = 'name'

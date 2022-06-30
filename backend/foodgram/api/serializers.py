@@ -34,7 +34,6 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'unit')
-        read_only_fields = '__all__',
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
@@ -43,9 +42,9 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = CountOfIngredient
-        fields = ('id', 'amount',)
+        fields = ('name', 'amount',)
         extra_kwargs = {
-            'id': {
+            'name': {
                 'read_only': False,
                 'error_messages': {
                     'does_not_exist': INGREDIENT_DOES_NOT_EXIST,
