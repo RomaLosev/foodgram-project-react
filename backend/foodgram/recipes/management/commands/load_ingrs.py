@@ -29,6 +29,7 @@ class Command(BaseCommand):
         except FileNotFoundError:
             raise CommandError('Файл ingredients не найден')
 
+
 app = Command()
 app.handle()
 print('Загрузка ингредиентов завершена')
