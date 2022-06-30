@@ -13,8 +13,8 @@ from recipes.models import (Ingredient, Recipe,
 from api.serializers import (IngredientSerializer, TagSerializer,
                              RecipeSerializer, RecipeListSerializer,
                              FavoriteSerializer, ShoppingCartSerializer)
-from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from api.filters import RecipeFilter
+from api.permissions import IsAuthorOrReadOnly
+from api.filters import RecipeFilter, IngredientSearchFilter
 from api.services.pdf import create_pdf
 
 
@@ -91,7 +91,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (permissions.AllowAny,)
     pagination_class = None
     lookup_field = 'id'
 
@@ -99,5 +99,6 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (permissions.AllowAny,)
+    filter_backends = (IngredientSearchFilter,)
     lookup_field = 'id'
