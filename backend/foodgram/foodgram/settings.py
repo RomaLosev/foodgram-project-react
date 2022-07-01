@@ -35,6 +35,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*localhost',
     'http://*178.154.198.83',
     'https://*178.154.198.83',
+    'http://*51.250.16.28',
+    'https://*51.250.16.28',
 ]
 
 
