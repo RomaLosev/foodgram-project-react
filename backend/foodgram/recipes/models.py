@@ -54,6 +54,41 @@ class Tag(models.Model):
         return f'{self.name}'
 
 
+class CountOfIngredient(models.Model):
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        related_name='amounts',
+        verbose_name='Ингредиент',
+        help_text='Ингредиент',
+    )
+    amount = models.PositiveSmallIntegerField(
+        help_text='Количество',
+        validators=(
+            MinValueValidator(
+                MIN_VALUE,
+                message=f'{MIN_VALUE_ERROR} - {MIN_VALUE}',
+            ),
+        ),
+    )
+
+    class Meta:
+        verbose_name = 'Количество ингредиента'
+        verbose_name_plural = 'Количество ингредиентов'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('ingredient', 'amount',),
+                name='unique_ingredient_amount',
+            ),
+        )
+
+    def __str__(self):
+        return (
+            f'{self.ingredient.name} - {self.amount}'
+            f' ({self.ingredient.unit})'
+        )
+
+
 class Recipe(models.Model):
     name = models.CharField(
         help_text='Название рецепта',
@@ -62,7 +97,7 @@ class Recipe(models.Model):
     image = models.ImageField(help_text='Изображение готового блюда')
     description = models.TextField(help_text='Описание рецепта')
     ingredients = models.ManyToManyField(
-        Ingredient,
+        CountOfIngredient,
         related_name='recipes',
         verbose_name='Ингредиенты',
         help_text='Ингредиенты',
@@ -101,47 +136,6 @@ class Recipe(models.Model):
 
     def get_absoulute_url(self):
         return reverse('recipe', args=[self.pk])
-
-
-class CountOfIngredient(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='amounts',
-        verbose_name='Рецепт'
-    )
-    ingredient = models.ForeignKey(
-        Ingredient,
-        on_delete=models.CASCADE,
-        related_name='count_in_recipes',
-        verbose_name='Ингредиент',
-        help_text='Ингредиент',
-    )
-    amount = models.PositiveSmallIntegerField(
-        help_text='Количество',
-        validators=(
-            MinValueValidator(
-                MIN_VALUE,
-                message=f'{MIN_VALUE_ERROR} - {MIN_VALUE}',
-            ),
-        ),
-    )
-
-    class Meta:
-        verbose_name = 'Количество ингредиента'
-        verbose_name_plural = 'Количество ингредиентов'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('ingredient', 'recipe',),
-                name='unique_ingredient_amount',
-            ),
-        )
-
-    def __str__(self):
-        return (
-            f'{self.ingredient.name} - {self.amount}'
-            f' ({self.ingredient.unit})'
-        )
 
 
 class Favorite(models.Model):

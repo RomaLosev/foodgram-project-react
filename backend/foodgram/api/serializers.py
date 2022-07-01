@@ -2,8 +2,9 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
-from foodgram.settings import MIN_AMOUNT, MIN_COOCKING_TIME
+from foodgram.settings import MIN_AMOUNT, MIN_VALUE, MIN_COOCKING_TIME
 from recipes.models import (
     Recipe, Tag, Ingredient,
     CountOfIngredient, Favorite, ShoppingCart
@@ -15,6 +16,7 @@ INGREDIENT_MIN_AMOUNT_ERROR = (
     'Количество ингредиента не может быть меньше {min_value}!'
 )
 INGREDIENT_DOES_NOT_EXIST = 'Такого ингредиента не существует!'
+INGREDIENTS_UNIQUE_ERROR = 'Ингредиенты не могут повторяться'
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -41,14 +43,24 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления ингредиентов
     """
-    id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all()
-    )
-    amount = serializers.IntegerField()
-
     class Meta:
         model = CountOfIngredient
         fields = ('id', 'amount')
+        extra_kwargs = {
+            'id': {
+                'read_only': False,
+                'error_messages': {
+                    'does_not_exist': INGREDIENT_DOES_NOT_EXIST,
+                }
+            },
+            'amount': {
+                'error_messages': {
+                    'min_value': INGREDIENT_MIN_AMOUNT_ERROR.format(
+                        min_value=MIN_VALUE
+                    ),
+                }
+            }
+        }
 
 
 class RecipeIngredientReadSerializer(serializers.ModelSerializer):
@@ -68,10 +80,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     """
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
-    ingredients = serializers.SerializerMethodField(
-        read_only=True,
-        method_name='ingredients'
-    )
+    ingredients = RecipeIngredientReadSerializer(many=True)
     is_favorited = serializers.SerializerMethodField(
         read_only=True,
         method_name='is_favorited'
@@ -85,9 +94,9 @@ class RecipeListSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = '__all__'
 
-    def ingredients(self, obj):
-        queryset = CountOfIngredient.objects.filter(recipe=obj)
-        return RecipeIngredientReadSerializer(queryset, many=True).data
+    # def ingredients(self, obj):
+    #     queryset = CountOfIngredient.objects.filter(recipe=obj)
+    #     return RecipeIngredientReadSerializer(queryset, many=True)
 
     def is_favorited(self, obj):
         request = self.context.get('request')
@@ -122,54 +131,37 @@ class RecipeSerializer(serializers.ModelSerializer):
             'name', 'description', 'cooking_time')
 
     def validate(self, data):
-        ingredients = data['ingredients']
-        ingredients_list = []
-        for ingredient in ingredients:
-            ingredient_id = ingredient['id']
-            if ingredient_id in ingredients_list:
-                raise serializers.ValidationError({
-                    'ingredients': 'Ингредиенты должны быть уникальными!'
-                })
-            ingredients_list.append(ingredient_id)
-            amount = ingredient['amount']
-            if int(amount) <= MIN_AMOUNT:
-                raise serializers.ValidationError({
-                    'amount': 'Ингредиентов должно быть больше {MIN_AMOUNT}!'
-                })
-
-        tags = data['tags']
-        if not tags:
-            raise serializers.ValidationError({
-                'tags': 'Нужно выбрать хотя бы один тэг!'
-            })
-        tags_list = []
-        for tag in tags:
-            if tag in tags_list:
-                raise serializers.ValidationError({
-                    'tags': 'Тэги должны быть уникальными!'
-                })
-            tags_list.append(tag)
-
-        cooking_time = data['cooking_time']
-        if int(cooking_time) <= MIN_COOCKING_TIME:
-            raise serializers.ValidationError({
-                'cooking_time': '{MIN_COOCKING_ERROR} - {MIN_COOCKUNG_TIME}!'
-            })
+        if data['cooking_time'] < MIN_COOCKING_TIME:
+            raise serializers.ValidationError(MIN_COOCKING_ERROR)
+        if len(data['tags']) == MIN_AMOUNT:
+            raise serializers.ValidationError('Надо выбрать тэг')
+        if len(data['tags']) > len(set(data['tags'])):
+            raise serializers.ValidationError('Одинаковые тэги')
+        if len(data['ingredients']) == MIN_VALUE:
+            raise serializers.ValidationError('Выберите ингредиенты')
+        id_ingredients = []
+        for ingredient in data['ingredients']:
+            if ingredient['amount'] < MIN_VALUE:
+                raise serializers.ValidationError(
+                    INGREDIENT_MIN_AMOUNT_ERROR.format(
+                        min_value=INGREDIENT_MIN_AMOUNT_ERROR,
+                    )
+                )
+            id_ingredients.append(ingredient['id'])
+        if len(id_ingredients) > len(set(id_ingredients)):
+            raise serializers.ValidationError(INGREDIENTS_UNIQUE_ERROR)
         return data
 
-    @staticmethod
-    def create_ingredients(ingredients, recipe):
-        for ingredient in ingredients:
-            CountOfIngredient.objects.get_or_create(
-                recipe=recipe,
-                ingredient=ingredient['id'],
-                amount=ingredient['amount']
-            )
-
-    @staticmethod
-    def create_tags(tags, recipe):
+    def add_tags_and_ingredients(self, tags, ingredients, instance):
         for tag in tags:
-            recipe.tags.add(tag)
+            instance.tags.add(tag)
+        for ingredient in ingredients:
+            count_of_ingredient, _ = CountOfIngredient.objects.get_or_create(
+                ingredient=get_object_or_404(Ingredient, pk=ingredient['id']),
+                amount=ingredient['amount'],
+            )
+            instance.ingredients.add(count_of_ingredient)
+        return instance
 
     @transaction.atomic
     def create(self, validated_data):
@@ -177,9 +169,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(author=author, **validated_data)
-        self.create_tags(tags, recipe)
-        self.create_ingredients(ingredients, recipe)
-        return recipe
+        return self.add_tags_and_ingredients(tags, ingredients, recipe)
 
     def to_representation(self, instance):
         request = self.context.get('request')

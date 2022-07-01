@@ -18,7 +18,6 @@ class CountOfIngredientAdmin(admin.ModelAdmin):
     list_display = (
         'ingredient',
         'amount',
-        'recipe',
     )
     search_fields = ('ingredient',)
 

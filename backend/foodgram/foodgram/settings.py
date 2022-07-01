@@ -91,6 +91,7 @@ DJOSER = {
         'token_destroy': ['rest_framework.permissions.IsAuthenticated']},
 }
 
+# 'kolo.middleware.KoloMiddleware',
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
