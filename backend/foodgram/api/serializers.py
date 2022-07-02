@@ -177,7 +177,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         context = {'request': request}
         return RecipeListSerializer(instance, context=context).data
 
-    def update_recipe_with_ingredients_tags(self, validated_data, instance):
+    def update(self, validated_data, instance):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
         unique_ingredients = set()
