@@ -30,11 +30,17 @@ class ShortRecipeSerializer(ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = ('id', 'author', 'name', 'image', 'cooking_time')
 
 
 class SubscriptionSerializer(CustomUserSerializer):
     recipes = ShortRecipeSerializer(many=True)
+    recipes_count = SerializerMethodField(
+        read_only=True, method_name='recipes_count'
+    )
+
+    def recipes_count(self, obj):
+        return obj.recipes.count()
 
     class Meta(CustomUserSerializer.Meta):
         fields = ('recipes',)
