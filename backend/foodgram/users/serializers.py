@@ -6,19 +6,19 @@ from recipes.models import Recipe
 
 
 class CustomUserSerializer(UserCreateSerializer):
-    is_following = SerializerMethodField(method_name='is_following_user')
+    is_subscribed = SerializerMethodField(method_name='is_subscribed_user')
 
     class Meta:
         model = User
         fields = (
             'id', 'email', 'username', 'first_name', 'last_name', 'password',
-            'is_following',
+            'is_subscribed',
         )
         extra_kwargs = {
             'password': {'write_only': True, 'required': True},
         }
 
-    def is_following_user(self, obj):
+    def is_subscribed_user(self, obj):
         user = self.context.get('request').user
         return (
             user.is_authenticated
@@ -30,17 +30,17 @@ class ShortRecipeSerializer(ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'author', 'name', 'image', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class SubscriptionSerializer(CustomUserSerializer):
     recipes = ShortRecipeSerializer(many=True)
-    recipes_count = SerializerMethodField(
-        read_only=True, method_name='recipes_count'
-    )
+    recipes_count = SerializerMethodField(method_name='get_recipes_count')
 
-    def recipes_count(self, obj):
+    def get_recipes_count(self, obj):
         return obj.recipes.count()
 
-    class Meta(CustomUserSerializer.Meta):
-        fields = ('recipes',)
+    class Meta():
+        model = User
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'is_subscribed', 'recipes', 'recipes_count')
