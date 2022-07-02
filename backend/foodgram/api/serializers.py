@@ -183,6 +183,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance = self.add_tags_and_ingredients(instance, validated_data)
         return super().update(instance, validated_data)
 
+
 class FavoriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для списка избранного
