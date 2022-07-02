@@ -179,10 +179,27 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.image = validated_data.get('image', instance.image)
+        instance.cooking_time = (
+            validated_data.get('cooking_time', instance.cooking_time)
+        )
+        instance.tags.set(validated_data.get('tags', instance.tags))
         instance.ingredients.clear()
-        instance.tags.clear()
-        self.add_tags_and_ingredients(instance, validated_data)
-        return super().update(instance, validated_data)
+        instance.save()
+
+        self.add_tags_and_ingredients(
+            instance, validated_data
+        )
+        instance.save()
+        return instance
+
+    # def update(self, recipe, validated_data, partial=True):
+    #     recipe.ingredients.clear()
+    #     recipe.tags.clear()
+    #     self.add_tags_and_ingredients(recipe, validated_data)
+    #     return super().update(recipe, validated_data)
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
