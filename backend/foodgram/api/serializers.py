@@ -190,18 +190,6 @@ class RecipeSerializer(serializers.ModelSerializer):
                 amount=ingredient['amount'],
             )
             instance.ingredients.add(count_of_ingredient)
-        instance.name = validated_data.get(
-            'name', validated_data.name
-        )
-        instance.text = validated_data.get(
-            'text', validated_data.text
-        )
-        instance.cooking_time = validated_data.get(
-            'cooking_time', instance.cooking_time
-        )
-        instance.image = validated_data.get(
-            'image', validated_data.image
-        )
         instance.save()
         return instance
 
