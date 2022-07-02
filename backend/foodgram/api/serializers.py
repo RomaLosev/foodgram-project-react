@@ -177,36 +177,19 @@ class RecipeSerializer(serializers.ModelSerializer):
         context = {'request': request}
         return RecipeListSerializer(instance, context=context).data
 
-    def update(self, validated_data, instance):
-        tags = validated_data.pop('tags')
-        ingredients = validated_data.pop('ingredients')
-        unique_ingredients = set()
-
-        for ingredient in ingredients:
-            if ingredient.get('amount') <= MIN_VALUE:
-                raise serializers.ValidationError(
-                    (INGREDIENT_MIN_AMOUNT_ERROR)
-                )
-            if ingredient['id'] in unique_ingredients:
-                raise serializers.ValidationError(
-                    (INGREDIENTS_UNIQUE_ERROR)
-                )
-            unique_ingredients.add(ingredient['id'])
-
+    def update(self, instance, validated_data):
         instance.tags.clear()
         instance.ingredients.clear()
-        instance.tags.add(*tags)
-
+        tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
+        for tag in tags:
+            instance.tags.add(tag)
         for ingredient in ingredients:
-            ingredient_object = get_object_or_404(
-                Ingredient,
-                id=ingredient.get('id')
+            count_of_ingredient, _ = CountOfIngredient.objects.get_or_create(
+                ingredient=get_object_or_404(Ingredient, pk=ingredient['id']),
+                amount=ingredient['amount'],
             )
-            instance.ingredients.add(
-                ingredient_object,
-                through_defaults={'amount': ingredient.get('amount')}
-            )
-
+            instance.ingredients.add(count_of_ingredient)
         instance.name = validated_data.get(
             'name', validated_data.name
         )
