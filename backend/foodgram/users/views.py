@@ -14,12 +14,12 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
     """
     Отдаёт все подписки пользователя
     """
-    serializer_class = SubscriptionSerializer(many=True)
+    serializer_class = SubscriptionSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         return User.objects.filter(
-            username=self.request.user)
+            following__user=self.request.user)
 
 
 class UsersViewSet(UserViewSet):

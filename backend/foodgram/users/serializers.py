@@ -33,11 +33,11 @@ class ShortRecipeSerializer(ModelSerializer):
 
 
 class SubscriptionSerializer(CustomUserSerializer):
-    recipes = ShortRecipeSerializer(many=True)
-    recipes_count = SerializerMethodField(method_name='recipes_count')
+    recipes = SerializerMethodField(method_name='recipes')
 
     class Meta(CustomUserSerializer.Meta):
-        fields = ('recipes', 'recipes_count',)
+        fields = ('recipes',)
 
-    def recipes_count(self, obj):
-        return obj.recipes.count()
+    def recipes(self, obj):
+        recipes = obj.recipes.all()
+        return ShortRecipeSerializer(recipes, many=True).data

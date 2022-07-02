@@ -14,7 +14,7 @@ def create_pdf(data: list, title: str) -> TextIO:
     buffer = io.BytesIO()
     page = canvas.Canvas(buffer, pagesize=A4)
     pdfmetrics.registerFont(
-        TTFont('CenturyGothic', '../../data/CenturyGothic.ttf', 'UTF-8')
+        TTFont('CenturyGothic', './CenturyGothic.ttf', 'UTF-8')
     )
 
     page.setFont('CenturyGothic', size=24)
