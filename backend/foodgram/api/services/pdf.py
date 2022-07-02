@@ -1,10 +1,15 @@
 import io
+import os
 from typing import TextIO
 
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
+
+from foodgram.settings import BASE_DIR
+
+DATA_ROOT = os.path.join(BASE_DIR, 'backend/data')
 
 
 def create_pdf(data: list, title: str) -> TextIO:
@@ -16,7 +21,7 @@ def create_pdf(data: list, title: str) -> TextIO:
     pdfmetrics.registerFont(
         TTFont(
             'CenturyGothic',
-            '/var/html/media_backend/CenturyGothic.ttf',
+            'data/CenturyGothic.ttf',
             'UTF-8'
         )
     )
