@@ -178,10 +178,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         return RecipeListSerializer(instance, context=context).data
 
     @transaction.atomic
-    def update(self, recipe, validated_data):
-        recipe.ingredients.clear()
-        recipe.tags.clear()
-        instance = self.add_tags_and_ingredients(recipe, validated_data)
+    def update(self, instance, validated_data):
+        instance.ingredients.clear()
+        instance.tags.clear()
+        instance = self.add_tags_and_ingredients(instance, validated_data)
         return super().update(instance, validated_data)
 
 
