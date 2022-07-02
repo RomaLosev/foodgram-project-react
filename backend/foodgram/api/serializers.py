@@ -178,12 +178,10 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
+        instance.ingredients.clear()
         instance.tags.clear()
-        CountOfIngredient.objects.filter(recipe=instance).delete()
-        self.create_tags(validated_data.pop('tags'), instance)
-        self.create_ingredients(validated_data.pop('ingredients'), instance)
+        instance = self.add_tags_and_ingredients(instance, validated_data)
         return super().update(instance, validated_data)
-
 
 class FavoriteSerializer(serializers.ModelSerializer):
     """
