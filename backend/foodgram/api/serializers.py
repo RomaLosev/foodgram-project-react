@@ -153,6 +153,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(INGREDIENTS_UNIQUE_ERROR)
         return data
 
+    @staticmethod
     def add_tags_and_ingredients(self, tags, ingredients, instance):
         for tag in tags:
             instance.tags.add(tag)
@@ -181,8 +182,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.ingredients.clear()
         instance.tags.clear()
-        instance = self.add_tags_and_ingredients(instance, validated_data)
-        return super().update(instance, validated_data)
+        return self.add_tags_and_ingredients(instance, validated_data)
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
