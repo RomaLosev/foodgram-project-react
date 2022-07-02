@@ -138,7 +138,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Надо выбрать тэг')
         if len(data['tags']) > len(set(data['tags'])):
             raise serializers.ValidationError('Одинаковые тэги')
-        if len(data['ingredients']) == MIN_AMOUNT:
+        if len(data['ingredients']) == MIN_VALUE:
             raise serializers.ValidationError('Выберите ингредиенты')
         id_ingredients = []
         for ingredient in data['ingredients']:
@@ -153,7 +153,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(INGREDIENTS_UNIQUE_ERROR)
         return data
 
-    @staticmethod
     def add_tags_and_ingredients(self, tags, ingredients, instance):
         for tag in tags:
             instance.tags.add(tag)
@@ -182,10 +181,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.ingredients.clear()
         instance.tags.clear()
-        instance.save()
-        tags = validated_data.pop('tags')
-        ingredients = validated_data.pop('ingredients')
-        return self.add_tags_and_ingredients(instance, tags, ingredients)
+        instance = self.add_tags_and_ingredients(instance, validated_data)
+        return super().update(instance, validated_data)
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
