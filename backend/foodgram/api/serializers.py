@@ -83,28 +83,29 @@ class RecipeListSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientReadSerializer(many=True)
     is_favorited = serializers.SerializerMethodField(
         read_only=True,
-        method_name='is_favorited'
+        method_name='get_is_favorited'
     )
     is_in_shopping_cart = serializers.SerializerMethodField(
         read_only=True,
-        method_name='is_in_shopping_cart'
+        method_name='get_is_in_shopping_cart'
     )
 
     class Meta:
         model = Recipe
-        fields = '__all__'
+        fields = (
+            'id', 'name', 'tags', 'author', 'ingredients', 'is_favorited',
+            'is_in_shopping_cart', 'image', 'text', 'cooking_time',
+        )
 
-    # def ingredients(self, obj):
-    #     queryset = CountOfIngredient.objects.filter(recipe=obj)
-    #     return RecipeIngredientReadSerializer(queryset, many=True)
-
-    def is_favorited(self, obj):
+    def get_is_favorited(self, obj):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
-        return Favorite.objects.filter(user=request.user, recipe=obj).exists()
+        return Favorite.objects.filter(
+            user=request.user, recipe=obj
+        ).exists()
 
-    def is_in_shopping_cart(self, obj):
+    def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
@@ -177,10 +178,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         return RecipeListSerializer(instance, context=context).data
 
     @transaction.atomic
-    def update(self, instance, validated_data):
-        instance.ingredients.clear()
-        instance.tags.clear()
-        instance = self.add_tags_and_ingredients(instance, validated_data)
+    def update(self, recipe, validated_data):
+        recipe.ingredients.clear()
+        recipe.tags.clear()
+        instance = self.add_tags_and_ingredients(recipe, validated_data)
         return super().update(instance, validated_data)
 
 
@@ -202,6 +203,11 @@ class FavoriteSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
+        recipe = data['recipe']
+        if Favorite.objects.filter(user=request.user, recipe=recipe).exists():
+            raise serializers.ValidationError({
+                'status': 'Рецепт уже есть в избранном!'
+            })
         return data
 
     def to_representation(self, instance):
