@@ -183,25 +183,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
         self.add_tags_and_ingredients(tags, ingredients, instance)
-        # for tag in tags:
-        #     instance.tags.add(tag)
-        # for ingredient in ingredients:
-        #     count_of_ingredient, _ = CountOfIngredient.objects.get_or_create(
-        #        ingredient=get_object_or_404(
-        #            Ingredient, pk=ingredient['id']
-        #            ),
-        #         amount=ingredient['amount'],
-        #     )
-        #     instance.ingredients.add(count_of_ingredient)
         instance.save()
         return instance
-
-    # def update(self, instance, validated_data):
-    #     instance.ingredients.clear()
-    #     instance.tags.clear()
-    #     instance = self.add_tags_and_ingredients(instance, validated_data)
-    #     instance.save()
-    #     return instance
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

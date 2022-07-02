@@ -1,4 +1,5 @@
 from django.contrib import admin
+from recipes.models import Favorite
 
 from recipes.models import Ingredient, Recipe, Tag, CountOfIngredient
 
@@ -34,9 +35,14 @@ class RecipesAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'author',
+        'favorite_count',
     )
     search_fields = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
+
+    @admin.display(empty_value='0')
+    def favorite_count(self, obj):
+        return Favorite.objects.filter(recipe=obj.id).count()
 
 
 @admin.register(Tag)
