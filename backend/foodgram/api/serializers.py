@@ -177,12 +177,57 @@ class RecipeSerializer(serializers.ModelSerializer):
         context = {'request': request}
         return RecipeListSerializer(instance, context=context).data
 
-    def update(self, instance, validated_data):
-        instance.ingredients.clear()
+    def update_recipe_with_ingredients_tags(self, validated_data, instance):
+        tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
+        unique_ingredients = set()
+
+        for ingredient in ingredients:
+            if ingredient.get('amount') <= MIN_VALUE:
+                raise serializers.ValidationError(
+                    (INGREDIENT_MIN_AMOUNT_ERROR)
+                )
+            if ingredient['id'] in unique_ingredients:
+                raise serializers.ValidationError(
+                    (INGREDIENTS_UNIQUE_ERROR)
+                )
+            unique_ingredients.add(ingredient['id'])
+
         instance.tags.clear()
-        instance = self.add_tags_and_ingredients(instance, validated_data)
+        instance.ingredients.clear()
+        instance.tags.add(*tags)
+
+        for ingredient in ingredients:
+            ingredient_object = get_object_or_404(
+                Ingredient,
+                id=ingredient.get('id')
+            )
+            instance.ingredients.add(
+                ingredient_object,
+                through_defaults={'amount': ingredient.get('amount')}
+            )
+
+        instance.name = validated_data.get(
+            'name', validated_data.name
+        )
+        instance.text = validated_data.get(
+            'text', validated_data.text
+        )
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time
+        )
+        instance.image = validated_data.get(
+            'image', validated_data.image
+        )
         instance.save()
         return instance
+
+    # def update(self, instance, validated_data):
+    #     instance.ingredients.clear()
+    #     instance.tags.clear()
+    #     instance = self.add_tags_and_ingredients(instance, validated_data)
+    #     instance.save()
+    #     return instance
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
