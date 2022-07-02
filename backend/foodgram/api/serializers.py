@@ -138,7 +138,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Надо выбрать тэг')
         if len(data['tags']) > len(set(data['tags'])):
             raise serializers.ValidationError('Одинаковые тэги')
-        if len(data['ingredients']) == MIN_VALUE:
+        if len(data['ingredients']) == MIN_AMOUNT:
             raise serializers.ValidationError('Выберите ингредиенты')
         id_ingredients = []
         for ingredient in data['ingredients']:
@@ -177,7 +177,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         context = {'request': request}
         return RecipeListSerializer(instance, context=context).data
 
-    @transaction.atomic
     def update(self, instance, validated_data):
         instance.ingredients.clear()
         instance.tags.clear()
