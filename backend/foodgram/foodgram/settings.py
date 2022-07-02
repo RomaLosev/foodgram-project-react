@@ -176,10 +176,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static_backend/'
-STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static_backend")
 
 MEDIA_URL = '/media_backend/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media_static")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media_backend")
 
 
 # Default primary key field type
