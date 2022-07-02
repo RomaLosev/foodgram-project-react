@@ -1,3 +1,4 @@
+from cgitb import text
 from django.db import models
 from django.urls import reverse
 from foodgram.settings import MIN_VALUE, MIN_VALUE_ERROR
@@ -95,7 +96,7 @@ class Recipe(models.Model):
         max_length=200
     )
     image = models.ImageField(help_text='Изображение готового блюда')
-    description = models.TextField(help_text='Описание рецепта')
+    text = models.TextField(help_text='Описание рецепта')
     ingredients = models.ManyToManyField(
         CountOfIngredient,
         related_name='recipes',
