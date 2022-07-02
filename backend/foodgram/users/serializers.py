@@ -27,17 +27,14 @@ class CustomUserSerializer(UserCreateSerializer):
 
 
 class ShortRecipeSerializer(ModelSerializer):
+
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time',)
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class SubscriptionSerializer(CustomUserSerializer):
-    recipes = SerializerMethodField(method_name='recipes')
+    recipes = ShortRecipeSerializer(many=True)
 
     class Meta(CustomUserSerializer.Meta):
         fields = ('recipes',)
-
-    def recipes(self, obj):
-        recipes = obj.recipes.all()
-        return ShortRecipeSerializer(recipes, many=True).data

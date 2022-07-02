@@ -125,11 +125,14 @@ class Recipe(models.Model):
         verbose_name='Автор',
         help_text='Автор рецепта',
     )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+    )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ('-pk',)
+        ordering = ('pub_date',)
 
     def __str__(self):
         return f'{self.name} ({self.author})'
