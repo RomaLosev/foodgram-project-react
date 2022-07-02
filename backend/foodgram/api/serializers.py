@@ -179,10 +179,10 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     @classmethod
     @transaction.atomic
-    def update(self, recipe, validated_data, partial=True):
+    def update(cls, recipe, validated_data, partial=True):
         recipe.ingredients.clear()
         recipe.tags.clear()
-        self.add_tags_and_ingredients(recipe, validated_data)
+        cls.add_tags_and_ingredients(recipe, validated_data)
         return super().update(recipe, validated_data)
 
 
