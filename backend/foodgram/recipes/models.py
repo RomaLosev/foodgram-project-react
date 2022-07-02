@@ -1,4 +1,3 @@
-from cgitb import text
 from django.db import models
 from django.urls import reverse
 from foodgram.settings import MIN_VALUE, MIN_VALUE_ERROR
