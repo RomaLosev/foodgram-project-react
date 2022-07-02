@@ -181,7 +181,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.ingredients.clear()
         instance.tags.clear()
-        instance = self.add_tags_and_ingredients(instance, validated_data)
+        self.add_tags_and_ingredients(instance, validated_data)
         return super().update(instance, validated_data)
 
 
