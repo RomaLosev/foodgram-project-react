@@ -52,7 +52,10 @@ class FollowViewSet(views.APIView):
             user=request.user,
             author=author,
         )
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(
+            author, context={'request': request}
+        ).data,
+        return Response(serializer, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         author = get_object_or_404(User, id=pk)
