@@ -76,11 +76,11 @@ docker-compose exec backend python manage.py createsuperuser
 docker-compose exec backend python manage.py collectstatic --noinput
 ```
 # Сайт
-- Готовый сайт доступен по ссылке: http://Ссылка
+- Готовый сайт доступен по ссылке: http://51.250.16.28
 
 # Документация к API
-- API документация доступна по ссылке (создана с помощью redoc): http://ссылка/docs/
+- API документация доступна по ссылке (создана с помощью redoc): http://51.250.16.28/api/docs/
 
-# Авторы
+# Автор
 Лосев Р.Р. https://github.com/huli-net - Python разработчик. Разработал бэкенд и деплой для проекта Foodgram.
 Команда Яндекс.Практикум -  Фронтенд для сервиса Foodgram.
