@@ -35,7 +35,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'unit')
+        fields = ('id', 'name', 'measurement_unit')
         read_only_fields = '__all__',
 
 
@@ -66,11 +66,11 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 class RecipeIngredientReadSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='ingredient.id')
     name = serializers.CharField(source='ingredient.name')
-    unit = serializers.CharField(source='ingredient.unit')
+    measurement_unit = serializers.CharField(source='ingredient.measurement_unit')
 
     class Meta:
         model = CountOfIngredient
-        fields = ('id', 'name', 'unit', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
         read_only_fields = '__all__',
 
 

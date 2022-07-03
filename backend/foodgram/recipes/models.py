@@ -12,7 +12,7 @@ class Ingredient(models.Model):
         max_length=100,
         help_text='Название ингредиента',
     )
-    unit = models.CharField(
+    measurement_unit = models.CharField(
         'Единица измерения',
         max_length=200,
         help_text='Единица измерения',
@@ -23,12 +23,12 @@ class Ingredient(models.Model):
         verbose_name_plural = 'Ингредиенты'
         ordering = ('name',)
         constraints = (
-            models.UniqueConstraint(fields=('name', 'unit',),
+            models.UniqueConstraint(fields=('name', 'measurement_unit',),
                                     name='unique ingredient'),
         )
 
     def __str__(self):
-        return f'{self.name} {self.unit}'
+        return f'{self.name} {self.measurement_unit}'
 
 
 class Tag(models.Model):
@@ -85,7 +85,7 @@ class CountOfIngredient(models.Model):
     def __str__(self):
         return (
             f'{self.ingredient.name} - {self.amount}'
-            f' ({self.ingredient.unit})'
+            f' ({self.ingredient.measurement_unit})'
         )
 
 

@@ -21,10 +21,10 @@ class Command(BaseCommand):
                       encoding='utf-8') as file:
                 data = csv.reader(file)
                 for row in data:
-                    name, unit = row
+                    name, measurement_unit = row
                     Ingredient.objects.get_or_create(
                         name=name,
-                        unit=unit
+                        measurement_unit=measurement_unit
                     )
         except FileNotFoundError:
             raise CommandError('Файл ingredients не найден')

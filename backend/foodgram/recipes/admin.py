@@ -8,7 +8,7 @@ from recipes.models import Ingredient, Recipe, Tag, CountOfIngredient
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-        'unit',
+        'measurement_unit',
         'id',
     )
     search_fields = ('name', 'id')

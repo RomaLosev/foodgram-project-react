@@ -77,7 +77,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         final_list = (
             ingredients.values(
-                'ingredient__name', 'ingredient__unit',
+                'ingredient__name', 'ingredient__measurement_unit',
             ).annotate(Sum('amount')))
 
         file = create_pdf(final_list, 'Список покупок')
