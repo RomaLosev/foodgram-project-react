@@ -23,9 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', default='p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs)')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-# os.getenv('DEBUG', default=False).upper() == 'TRUE'
+DEBUG = os.getenv('DEBUG', default=False).upper() == 'TRUE'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default=['*'])
 
@@ -33,10 +31,10 @@ CSRF_TRUSTED_ORIGINS = [
     'http://*localhost',
     'http://*127.0.0.1',
     'https://*localhost',
-    'http://*178.154.198.83',
-    'https://*178.154.198.83',
     'http://*51.250.16.28',
     'https://*51.250.16.28',
+    'http://*recipesgram.ddns.net',
+    'https://*recipesgram.ddns.net',
 ]
 
 

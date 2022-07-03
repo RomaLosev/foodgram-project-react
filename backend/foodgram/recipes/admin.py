@@ -12,6 +12,7 @@ class IngredientAdmin(admin.ModelAdmin):
         'id',
     )
     search_fields = ('name', 'id')
+    list_filter = ('name',)
 
 
 @admin.register(CountOfIngredient)
@@ -37,6 +38,7 @@ class RecipesAdmin(admin.ModelAdmin):
         'author',
         'favorite_count',
     )
+    list_filter = ('name', 'author', 'tags')
     search_fields = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
