@@ -36,7 +36,7 @@ def create_pdf(data: list, title: str) -> TextIO:
             15, height,
             (f"{i['ingredient__name']} - "
              f"{i['amount__sum']} "
-             f"{i['ingredient__unit']}")
+             f"{i['ingredient__measurement_unit']}")
         )
         height -= 25
 
