@@ -15,7 +15,7 @@ class FavoriteAdmin(admin.ModelAdmin):
         'recipe',
     )
     search_fields = ('user__username', 'recipe__name', 'user__email')
-    list_filter = ('recipe', 'user')
+    list_filter = ('user',)
 
 
 @admin.register(ShoppingCart)
@@ -25,7 +25,7 @@ class ShoppingCartAdmin(admin.ModelAdmin):
         'recipe',
     )
     search_fields = ('user__username', 'recipe__name', 'user__email')
-    list_filter = ('recipe', 'user')
+    list_filter = ('user',)
 
 
 @admin.register(Ingredient)

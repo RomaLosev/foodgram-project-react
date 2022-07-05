@@ -28,8 +28,8 @@ class UserAdmin(admin.ModelAdmin):
         'id',
     )
     search_fields = (
-        'user__username', 'user__first_name',
-        'user__last_name', 'user__id'
+        'username', 'first_name',
+        'last_name', 'id',
     )
     empty_value_display = '-пусто-'
 
