@@ -33,14 +33,17 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(
+        verbose_name='Название',
         help_text='тэг',
         max_length=30
     )
     color = models.CharField(
+        verbose_name='Цвет',
         help_text='цвет в HEX формате',
         max_length=7
     )
     slug = models.SlugField(
+        verbose_name='Слаг',
         help_text='слаг',
         max_length=30
     )
@@ -58,12 +61,13 @@ class CountOfIngredient(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='amounts',
+        related_name='recipe',
         verbose_name='Ингредиент',
         help_text='Ингредиент',
     )
     amount = models.PositiveSmallIntegerField(
         help_text='Количество',
+        verbose_name='Количество',
         validators=(
             MinValueValidator(
                 MIN_VALUE,
@@ -73,8 +77,8 @@ class CountOfIngredient(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Количество ингредиента'
-        verbose_name_plural = 'Количество ингредиентов'
+        verbose_name = 'Ингредиент в рецепт'
+        verbose_name_plural = 'Ингредиенты в рецепт'
         constraints = (
             models.UniqueConstraint(
                 fields=('ingredient', 'amount',),
@@ -92,10 +96,18 @@ class CountOfIngredient(models.Model):
 class Recipe(models.Model):
     name = models.CharField(
         help_text='Название рецепта',
+        verbose_name='Название рецепта',
         max_length=200
     )
-    image = models.ImageField(help_text='Изображение готового блюда')
-    text = models.TextField(help_text='Описание рецепта')
+    image = models.ImageField(
+        help_text='Изображение готового блюда',
+        verbose_name='Изображение'
+
+    )
+    text = models.TextField(
+        help_text='Описание рецепта',
+        verbose_name='Описание'
+    )
     ingredients = models.ManyToManyField(
         CountOfIngredient,
         related_name='recipes',
@@ -110,6 +122,7 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         help_text='Время приготовления',
+        verbose_name='Время приготовления',
         validators=(
             MinValueValidator(
                 1,
@@ -127,6 +140,7 @@ class Recipe(models.Model):
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
+        verbose_name='Дата публикации'
     )
 
     class Meta:

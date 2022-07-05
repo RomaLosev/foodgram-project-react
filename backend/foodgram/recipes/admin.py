@@ -1,7 +1,31 @@
 from django.contrib import admin
 from recipes.models import Favorite
 
-from recipes.models import Ingredient, Recipe, Tag, CountOfIngredient
+from recipes.models import (
+    Ingredient, Recipe,
+    Tag, CountOfIngredient,
+    Favorite, ShoppingCart
+)
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'recipe',
+    )
+    search_fields = ('user__username', 'recipe__name', 'user__email')
+    list_filter = ('recipe', 'user')
+
+
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'recipe',
+    )
+    search_fields = ('user__username', 'recipe__name', 'user__email')
+    list_filter = ('recipe', 'user')
 
 
 @admin.register(Ingredient)
@@ -11,8 +35,8 @@ class IngredientAdmin(admin.ModelAdmin):
         'measurement_unit',
         'id',
     )
-    search_fields = ('name', 'id')
-    list_filter = ('name',)
+    search_fields = ('name',)
+    list_filter = ('measurement_unit',)
 
 
 @admin.register(CountOfIngredient)
@@ -24,25 +48,21 @@ class CountOfIngredientAdmin(admin.ModelAdmin):
     search_fields = ('ingredient',)
 
 
-class CountOfIngredientInline(admin.TabularInline):
-    model = Recipe.ingredients.through
-
-
 @admin.register(Recipe)
 class RecipesAdmin(admin.ModelAdmin):
-    inlines = (
-        CountOfIngredientInline,
-    )
     list_display = (
         'name',
         'author',
         'favorite_count',
     )
-    list_filter = ('name', 'author', 'tags')
-    search_fields = ('author', 'name', 'tags')
+    list_filter = ('tags',)
+    search_fields = ('name', 'author__username', 'author__email')
     empty_value_display = '-пусто-'
 
-    @admin.display(empty_value='0')
+    @admin.display(
+        empty_value='0',
+        description='Сколько раз добавили в избранное'
+    )
     def favorite_count(self, obj):
         return Favorite.objects.filter(recipe=obj.id).count()
 

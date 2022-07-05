@@ -19,13 +19,15 @@ class Follow(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
         constraints = [
-            models.UniqueConstraint(fields=['user', 'author'],
+            models.UniqueConstraint(fields=('user', 'author',),
                                     name='unique_following')
         ]
 
     def __str__(self):
-        f"{self.user} подписан на {self.author}"
+        return f'{self.user} {self.author}'
 
 
 class ShoppingCart(models.Model):
